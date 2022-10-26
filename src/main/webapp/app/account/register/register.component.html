@@ -1,0 +1,146 @@
+<div>
+  <div class="d-flex justify-content-center">
+    <div class="col-md-8">
+      <h1 data-cy="registerTitle">Registratie</h1>
+
+      <div class="alert alert-success" *ngIf="success">
+        <strong>Registratie opgeslaan!</strong> Gelieve uw email te controlleren ter bevestiging.
+      </div>
+
+      <div class="alert alert-danger" *ngIf="error"><strong>Registratie mislukt!</strong> Probeer het later opnieuw.</div>
+
+      <div class="alert alert-danger" *ngIf="errorUserExists">
+        <strong>Login naam is al geregistreerd!</strong> Gelieve een andere te kiezen.
+      </div>
+
+      <div class="alert alert-danger" *ngIf="errorEmailExists"><strong>Email is al in gebruik!</strong> Gelieve een andere te kiezen.</div>
+
+      <div class="alert alert-danger" *ngIf="doNotMatch">Het wachtwoord en zijn bevestiging komen niet overeen!</div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center">
+    <div class="col-md-8">
+      <form name="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm" *ngIf="!success">
+        <div class="mb-3">
+          <label class="form-label" for="login">Username</label>
+          <input
+            type="text"
+            class="form-control"
+            id="login"
+            name="login"
+            placeholder="Uw username"
+            formControlName="login"
+            data-cy="username"
+            #login
+          />
+
+          <div *ngIf="registerForm.get('login')!.invalid && (registerForm.get('login')!.dirty || registerForm.get('login')!.touched)">
+            <small class="form-text text-danger" *ngIf="registerForm.get('login')?.errors?.required"> Uw login is vereist. </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('login')?.errors?.minlength">
+              Uw login moet minstens 1 tekens lang zijn
+            </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('login')?.errors?.maxlength">
+              Uw login kan niet langer zijn dan 50 tekens.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('login')?.errors?.pattern"> Your username is invalid. </small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Uw email" formControlName="email" data-cy="email" />
+
+          <div *ngIf="registerForm.get('email')!.invalid && (registerForm.get('email')!.dirty || registerForm.get('email')!.touched)">
+            <small class="form-text text-danger" *ngIf="registerForm.get('email')?.errors?.required"> Uw email is vereist. </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('email')?.errors?.invalid"> Uw email is ongeldig. </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('email')?.errors?.minlength">
+              Uw email moet minstens 5 tekens lang zijn.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('email')?.errors?.maxlength">
+              Uw email kan niet langer zijn dan 50 tekens.
+            </small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="password">Nieuw wachtwoord</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Nieuw wachtwoord"
+            formControlName="password"
+            data-cy="firstPassword"
+          />
+
+          <div
+            *ngIf="registerForm.get('password')!.invalid && (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)"
+          >
+            <small class="form-text text-danger" *ngIf="registerForm.get('password')?.errors?.required"> Uw wachtwoord is vereist. </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('password')?.errors?.minlength">
+              Uw wachtwoord moet minstens 4 tekens lang zijn.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('password')?.errors?.maxlength">
+              Uw wachtwoord kan niet langer zijn dan 50 tekens.
+            </small>
+          </div>
+
+          <jhi-password-strength-bar [passwordToCheck]="registerForm.get('password')!.value"></jhi-password-strength-bar>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="confirmPassword">Nieuw wachtwoord bevestigen</label>
+          <input
+            type="password"
+            class="form-control"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Bevestig het nieuwe wachtwoord"
+            formControlName="confirmPassword"
+            data-cy="secondPassword"
+          />
+
+          <div
+            *ngIf="
+              registerForm.get('confirmPassword')!.invalid &&
+              (registerForm.get('confirmPassword')!.dirty || registerForm.get('confirmPassword')!.touched)
+            "
+          >
+            <small class="form-text text-danger" *ngIf="registerForm.get('confirmPassword')?.errors?.required">
+              Uw wachtwoord bevestiging is vereist.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('confirmPassword')?.errors?.minlength">
+              Uw wachtwoord bevestiging moet minstens 4 tekens lang zijn.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="registerForm.get('confirmPassword')?.errors?.maxlength">
+              Uw wachtwoord bevestiging kan niet langer zijn dan 50 tekens.
+            </small>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid" class="btn btn-primary" data-cy="submit">Registreer</button>
+      </form>
+
+      <div class="mt-3 alert alert-warning">
+        <span>Indien u wilt </span>
+        <a class="alert-link" routerLink="/login">aanmelden</a
+        ><span
+          >, dan kan u de standaard gebruikers proberen:<br />- Administrator (login="admin" en wachtwoord="admin") <br />- Gebruiker
+          (login="user" en wachtwoord="user").</span
+        >
+      </div>
+    </div>
+  </div>
+</div>
